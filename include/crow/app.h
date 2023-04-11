@@ -187,7 +187,7 @@ namespace crow
             bindaddr_ = bindaddr;
             return *this;
         }
-        
+
         /// Get the address that Crow will handle requests on
         std::string bindaddr()
         {
@@ -208,7 +208,7 @@ namespace crow
             concurrency_ = concurrency;
             return *this;
         }
-        
+
         /// Get the number of threads that server is using
         std::uint16_t concurrency()
         {
@@ -261,6 +261,12 @@ namespace crow
             return *this;
         }
 
+        /// Set the static file directory before running the app
+        void set_static_dir(const std::string& static_dir)
+        {
+            static_dir_ = static_dir;
+        }
+
 #ifdef CROW_ENABLE_COMPRESSION
         self_t& use_compression(compression::algorithm algorithm)
         {
@@ -291,7 +297,6 @@ namespace crow
 #ifndef CROW_DISABLE_STATIC_DIR
 
                 // stat on windows doesn't care whether '/' or '\' is being used. on Linux however, using '\' doesn't work. therefore every instance of '\' gets replaced with '/' then a check is done to make sure the directory ends with '/'.
-                std::string static_dir_(CROW_STATIC_DIRECTORY);
                 std::replace(static_dir_.begin(), static_dir_.end(), '\\', '/');
                 if (static_dir_[static_dir_.length() - 1] != '/')
                     static_dir_ += '/';
@@ -559,6 +564,7 @@ namespace crow
 
 
     private:
+        std::string static_dir_ = "static";
         std::uint8_t timeout_{5};
         uint16_t port_ = 80;
         uint16_t concurrency_ = 2;

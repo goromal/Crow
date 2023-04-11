@@ -25,9 +25,6 @@
 #define CROW_LOG_LEVEL 1
 #endif
 
-#ifndef CROW_STATIC_DIRECTORY
-#define CROW_STATIC_DIRECTORY "static/"
-#endif
 #ifndef CROW_STATIC_ENDPOINT
 #define CROW_STATIC_ENDPOINT "/static/<path>"
 #endif
