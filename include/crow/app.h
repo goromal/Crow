@@ -297,13 +297,14 @@ namespace crow
 #ifndef CROW_DISABLE_STATIC_DIR
 
                 // stat on windows doesn't care whether '/' or '\' is being used. on Linux however, using '\' doesn't work. therefore every instance of '\' gets replaced with '/' then a check is done to make sure the directory ends with '/'.
-                std::replace(static_dir_.begin(), static_dir_.end(), '\\', '/');
-                if (static_dir_[static_dir_.length() - 1] != '/')
-                    static_dir_ += '/';
+                std::string static_dir(static_dir_);
+                std::replace(static_dir.begin(), static_dir.end(), '\\', '/');
+                if (static_dir[static_dir.length() - 1] != '/')
+                    static_dir += '/';
 
-                route<crow::black_magic::get_parameter_tag(CROW_STATIC_ENDPOINT)>(CROW_STATIC_ENDPOINT)([this](crow::response& res, std::string file_path_partial) {
+                route<crow::black_magic::get_parameter_tag(CROW_STATIC_ENDPOINT)>(CROW_STATIC_ENDPOINT)([static_dir](crow::response& res, std::string file_path_partial) {
                     utility::sanitize_filename(file_path_partial);
-                    res.set_static_file_info_unsafe(static_dir_ + file_path_partial);
+                    res.set_static_file_info_unsafe(static_dir + file_path_partial);
                     res.end();
                 });
 
@@ -316,14 +317,14 @@ namespace crow
                         if (!bp->static_dir().empty())
                         {
                             // stat on windows doesn't care whether '/' or '\' is being used. on Linux however, using '\' doesn't work. therefore every instance of '\' gets replaced with '/' then a check is done to make sure the directory ends with '/'.
-                            std::string static_dir_(bp->static_dir());
-                            std::replace(static_dir_.begin(), static_dir_.end(), '\\', '/');
-                            if (static_dir_[static_dir_.length() - 1] != '/')
-                                static_dir_ += '/';
+                            std::string static_dir(bp->static_dir());
+                            std::replace(static_dir.begin(), static_dir.end(), '\\', '/');
+                            if (static_dir[static_dir.length() - 1] != '/')
+                                static_dir += '/';
 
-                            bp->new_rule_tagged<crow::black_magic::get_parameter_tag(CROW_STATIC_ENDPOINT)>(CROW_STATIC_ENDPOINT)([static_dir_](crow::response& res, std::string file_path_partial) {
+                            bp->new_rule_tagged<crow::black_magic::get_parameter_tag(CROW_STATIC_ENDPOINT)>(CROW_STATIC_ENDPOINT)([static_dir](crow::response& res, std::string file_path_partial) {
                                 utility::sanitize_filename(file_path_partial);
-                                res.set_static_file_info_unsafe(static_dir_ + file_path_partial);
+                                res.set_static_file_info_unsafe(static_dir + file_path_partial);
                                 res.end();
                             });
                         }
@@ -564,7 +565,7 @@ namespace crow
 
 
     private:
-        std::string static_dir_ = "static";
+        std::string static_dir_ = CROW_STATIC_DIRECTORY;
         std::uint8_t timeout_{5};
         uint16_t port_ = 80;
         uint16_t concurrency_ = 2;
