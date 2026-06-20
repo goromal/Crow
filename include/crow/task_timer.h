@@ -30,7 +30,7 @@ namespace crow
             using time_type = clock_type::time_point;
 
         public:
-            task_timer(asio::io_service& io_service):
+            task_timer(asio::io_context& io_service):
               io_service_(io_service), timer_(io_service_)
             {
                 timer_.expires_after(std::chrono::seconds(1));
@@ -125,7 +125,7 @@ namespace crow
 
         private:
             std::uint8_t default_timeout_{5};
-            asio::io_service& io_service_;
+            asio::io_context& io_service_;
             asio::basic_waitable_timer<clock_type> timer_;
             std::map<identifier_type, std::pair<time_type, task_type>> tasks_;
 
