@@ -21,11 +21,11 @@ namespace crow
     struct SocketAdaptor
     {
         using context = void;
-        SocketAdaptor(asio::io_service& io_service, context*):
+        SocketAdaptor(asio::io_context& io_service, context*):
           socket_(io_service)
         {}
 
-        asio::io_service& get_io_service()
+        asio::io_context& get_io_service()
         {
             return GET_IO_SERVICE(socket_);
         }
@@ -90,7 +90,7 @@ namespace crow
     {
         using context = asio::ssl::context;
         using ssl_socket_t = asio::ssl::stream<tcp::socket>;
-        SSLAdaptor(asio::io_service& io_service, context* ctx):
+        SSLAdaptor(asio::io_context& io_service, context* ctx):
           ssl_socket_(new ssl_socket_t(io_service, *ctx))
         {}
 
@@ -151,7 +151,7 @@ namespace crow
             }
         }
 
-        asio::io_service& get_io_service()
+        asio::io_context& get_io_service()
         {
             return GET_IO_SERVICE(raw_socket());
         }

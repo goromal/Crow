@@ -37,7 +37,7 @@ namespace crow
 
     public:
         Connection(
-          asio::io_service& io_service,
+          asio::io_context& io_service,
           Handler* handler,
           const std::string& server_name,
           std::tuple<Middlewares...>* middlewares,
